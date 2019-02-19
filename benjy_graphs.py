@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import nltk
+from wordcloud import WordCloud, STOPWORDS
+from PIL import Image
 
 pd.set_option('display.max_rows', 50)
 pd.set_option('display.max_columns', 500)
@@ -10,7 +13,14 @@ pd.set_option('display.width', 1000)
 file = 'data/data_clean.csv'
 df = pd.read_csv(file, sep=";", header=0, encoding="ISO-8859-1", low_memory=False)
 df['casualties'] = df['nkill'] + df['nwound']
-df['weaptype1_txt'] = np.where(df['weaptype1_txt'] == 'Vehicle (not to include vehicle-borne explosives, i.e., car or truck bombs)', 'Vehicle', df['weaptype1_txt'])
+df['weaptype1_txt'] = np.where(
+    df['weaptype1_txt'] == 'Vehicle (not to include vehicle-borne explosives, i.e., car or truck bombs)', 'Vehicle',
+    df['weaptype1_txt'])
+
+
+
+
+print(df['targtype1_txt'].unique())
 
 # df = df.head(10000)
 
@@ -53,26 +63,29 @@ def plots():
     plt.title('Casualties per attack type')
     plt.show()
 
-plots()
+
+# plots()
+
 
 def word_cloud():
-    import nltk
-    from wordcloud import WordCloud, STOPWORDS
+    mask = np.array(Image.open("data/ak_47.jpg"))
+    # mask =np.array(Image.open("data/terrorist.png"))
 
-    motive = terror['Motive'].str.lower().str.replace(r'\|', ' ').str.cat(sep=' ')
+    df['motive'] = np.where(df['motive'] == 'The specific motive for the attack is unknown.', '', df['motive'])
+    motive = df.loc[(df['targtype1_txt'] == 'Tourists'), 'motive'].str.lower().str.replace(r'\|', ' ').str.cat(sep=' ')
     words = nltk.tokenize.word_tokenize(motive)
-    word_dist = nltk.FreqDist(words)
     stopwords = nltk.corpus.stopwords.words('english')
-    f1 = open("kaggle.png", "wb")
-    f1.write(codecs.decode(kaggle, 'base64'))
-    f1.close()
-    img1 = imread("kaggle.png")
-    hcmask1 = img1
+    [stopwords.append(w_) for w_ in ['unknown']]
     words_except_stop_dist = nltk.FreqDist(w for w in words if w not in stopwords)
-    wordcloud = WordCloud(stopwords=STOPWORDS, background_color='black', mask=hcmask1).generate(
-        " ".join(words_except_stop_dist))
-    plt.imshow(wordcloud)
-    fig = plt.gcf()
-    fig.set_size_inches(10, 6)
+
+    wordcloud = WordCloud(max_font_size=250, max_words=1000, stopwords=STOPWORDS, background_color='white', width=500,
+                          height=500, margin=0, mask=mask).generate(" ".join(words_except_stop_dist))
+
+    plt.figure()
+    plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis('off')
     plt.show()
+    # wordcloud.to_file("first_test.png")
+
+
+word_cloud()
