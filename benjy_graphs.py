@@ -85,7 +85,7 @@ def word_cloud():
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis('off')
     plt.show()
-    # wordcloud.to_file("first_test.png")
+    wordcloud.to_file("img/cloud_test.png")
 
 
 word_cloud()
