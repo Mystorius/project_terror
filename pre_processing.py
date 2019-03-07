@@ -35,4 +35,4 @@ df_clean = df.drop(
      'weaptype4_txt', 'weapsubtype4', 'weapsubtype4_txt', 'nkillus', 'nwoundus', 'nwoundte', 'ishostkid', 'nhostkidus',
      'kidhijcountry', 'ransom', 'ransomamtus', 'ransompaidus', 'INT_MISC', 'INT_ANY'], axis=1)
 
-df_clean.to_csv('data_clean.csv', sep=';', encoding='utf-8')
+df_clean.to_csv('data/data_clean.csv', sep=';', encoding='utf-8')

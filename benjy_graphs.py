@@ -3,8 +3,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import nltk
-from wordcloud import WordCloud, STOPWORDS
-from PIL import Image
+# from wordcloud import WordCloud, STOPWORDS
+# from PIL import Image
 
 pd.set_option('display.max_rows', 50)
 pd.set_option('display.max_columns', 500)
@@ -16,7 +16,7 @@ df['casualties'] = df['nkill'] + df['nwound']
 df['weaptype1_txt'] = np.where(
     df['weaptype1_txt'] == 'Vehicle (not to include vehicle-borne explosives, i.e., car or truck bombs)', 'Vehicle',
     df['weaptype1_txt'])
-
+df.loc[df['gname'] == 'Taliban']
 
 
 
@@ -64,7 +64,7 @@ def plots():
     plt.show()
 
 
-# plots()
+plots()
 
 
 def word_cloud():
@@ -88,4 +88,4 @@ def word_cloud():
     wordcloud.to_file("img/cloud_test.png")
 
 
-word_cloud()
+# word_cloud()
