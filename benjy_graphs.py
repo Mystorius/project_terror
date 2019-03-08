@@ -16,7 +16,7 @@ df['casualties'] = df['nkill'] + df['nwound']
 df['weaptype1_txt'] = np.where(
     df['weaptype1_txt'] == 'Vehicle (not to include vehicle-borne explosives, i.e., car or truck bombs)', 'Vehicle',
     df['weaptype1_txt'])
-df.loc[df['gname'] == 'Taliban']
+# df.loc[df['gname'] == 'Taliban']
 
 
 
