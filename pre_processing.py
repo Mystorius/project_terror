@@ -26,7 +26,7 @@ df['summary'] = np.where(type(df['crit1']) == str, df['crit1'], df['summary'])
 
 
 df_clean = df.drop(
-    ['approxdate', 'iyear', 'imonth', 'iday', 'resolution', 'specificity', 'vicinity', 'doubtterr', 'alternative',
+    ['approxdate', 'resolution', 'specificity', 'vicinity', 'doubtterr', 'alternative',
      'alternative_txt', 'multiple', 'attacktype2', 'attacktype2_txt', 'attacktype3', 'attacktype3_txt', 'targtype2',
      'targtype2_txt', 'targsubtype2', 'targtype2_txt', 'corp2', 'target2', 'natlty2', 'natlty2_txt', 'targtype3',
      'targtype3_txt', 'targsubtype3', 'targtype3_txt', 'corp3', 'target3', 'natlty3', 'natlty3_txt', 'gname3',
@@ -35,4 +35,4 @@ df_clean = df.drop(
      'weaptype4_txt', 'weapsubtype4', 'weapsubtype4_txt', 'nkillus', 'nwoundus', 'nwoundte', 'ishostkid', 'nhostkidus',
      'kidhijcountry', 'ransom', 'ransomamtus', 'ransompaidus', 'INT_MISC', 'INT_ANY'], axis=1)
 
-df_clean.to_csv('data_clean.csv', sep='\t', encoding='utf-8')
+df_clean.to_csv('data/data_clean.csv', sep=';', encoding='utf-8')
