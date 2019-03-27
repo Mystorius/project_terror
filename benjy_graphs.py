@@ -3,6 +3,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import nltk
+
 # from wordcloud import WordCloud, STOPWORDS
 # from PIL import Image
 
@@ -16,13 +17,7 @@ df['casualties'] = df['nkill'] + df['nwound']
 df['weaptype1_txt'] = np.where(
     df['weaptype1_txt'] == 'Vehicle (not to include vehicle-borne explosives, i.e., car or truck bombs)', 'Vehicle',
     df['weaptype1_txt'])
-# df.loc[df['gname'] == 'Taliban']
 
-
-
-print(df['targtype1_txt'].unique())
-
-# df = df.head(10000)
 
 def plots():
     # attacks per year
@@ -64,10 +59,55 @@ def plots():
     plt.show()
 
 
-plots()
+# plots()
+
+
+def plots_grouped():
+    df_group = df.loc[(df['gname'] == 'Taliban') | (df['gname'] == 'Islamic State of Iraq and the Levant (ISIL)') | (df['gname'] == 'Boko Haram')]
+
+    # attacks per year
+    plt.subplots(figsize=(15, 6))
+    sns.countplot(x='iyear', hue='gname', data=df_group, palette='inferno')
+    plt.xticks(rotation=90)
+    plt.title('Total attacks per year')
+    plt.show()
+
+    # casualties per year
+    count_casul = df_group.groupby(['iyear', 'gname'])['casualties'].sum().to_frame()
+    plt.subplots(figsize=(15, 6))
+    sns.barplot(x=count_casul.index.get_level_values('iyear'), hue=count_casul.index.get_level_values('gname'), y='casualties', data=count_casul, palette='inferno')
+    plt.xticks(rotation=90)
+    plt.title('Casualties per year')
+    plt.show()
+
+    # attacks methods
+    plt.subplots(figsize=(15, 6))
+    sns.countplot('attacktype1_txt', hue='gname', data=df_group, palette='inferno', order=df['attacktype1_txt'].value_counts().index)
+    plt.xticks(rotation=45)
+    plt.title('Attacking Types by Terrorists')
+    plt.show()
+
+    # weapons used
+    plt.subplots(figsize=(15, 6))
+    sns.countplot('weaptype1_txt', hue='gname', data=df_group, palette='inferno', order=df['weaptype1_txt'].value_counts().index)
+    plt.xticks(rotation=45)
+    plt.title('Attacking Methods by Terrorists')
+    plt.show()
+
+    # attack type vs casualties
+    count_per_type = df_group.groupby(['attacktype1_txt', 'gname'])['casualties'].sum().to_frame()
+    plt.subplots(figsize=(15, 6))
+    sns.barplot(x=count_per_type.index.get_level_values('attacktype1_txt'), hue=count_per_type.index.get_level_values('gname'), y='casualties', data=count_per_type, palette='inferno')
+    plt.xticks(rotation=45)
+    plt.title('Casualties per attack type')
+    plt.show()
+
+
+plots_grouped()
 
 
 def word_cloud():
+    df_group = df.loc[(df['gname'] == 'Taliban') | (df['gname'] == 'Islamic State of Iraq and the Levant (ISIL)') | (df['gname'] == 'Boko Haram')]
     mask = np.array(Image.open("data/ak_47.jpg"))
     # mask =np.array(Image.open("data/terrorist.png"))
 
@@ -86,6 +126,5 @@ def word_cloud():
     plt.axis('off')
     plt.show()
     wordcloud.to_file("img/cloud_test.png")
-
 
 # word_cloud()
