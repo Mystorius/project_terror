@@ -4,8 +4,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import nltk
 
-# from wordcloud import WordCloud, STOPWORDS
-# from PIL import Image
+from wordcloud import WordCloud, STOPWORDS
+from PIL import Image
 
 pd.set_option('display.max_rows', 50)
 pd.set_option('display.max_columns', 500)
@@ -20,42 +20,59 @@ df['weaptype1_txt'] = np.where(
 
 
 def plots():
-    # attacks per year
-    plt.subplots(figsize=(15, 6))
-    sns.countplot(x='iyear', data=df, palette='inferno')
-    plt.xticks(rotation=90)
-    plt.title('Total attacks per year')
-    plt.show()
-
-    # casualties per year
-    count_casul = df.groupby('iyear')['casualties'].sum().to_frame()
-    plt.subplots(figsize=(15, 6))
-    sns.barplot(x=count_casul.index, y='casualties', data=count_casul, palette='inferno')
-    plt.xticks(rotation=90)
-    plt.title('Casualties per year')
-    plt.show()
-
-    # attacks methods
-    plt.subplots(figsize=(15, 6))
-    sns.countplot('attacktype1_txt', data=df, palette='inferno', order=df['attacktype1_txt'].value_counts().index)
-    plt.xticks(rotation=45)
-    plt.title('Attacking Types by Terrorists')
-    plt.show()
-
-    # weapons used
-    plt.subplots(figsize=(15, 6))
-    sns.countplot('weaptype1_txt', data=df, palette='inferno', order=df['weaptype1_txt'].value_counts().index)
-    plt.xticks(rotation=45)
-    plt.title('Attacking Methods by Terrorists')
-    plt.show()
+    # # attacks per year
+    # plt.subplots(figsize=(15, 6))
+    # sns.countplot(x='iyear', data=df, palette='inferno')
+    # plt.xticks(rotation=90)
+    # plt.title('Total attacks per year')
+    # plt.show()
+    #
+    # # casualties per year
+    # count_casul = df.groupby('iyear')['casualties'].sum().to_frame()
+    # plt.subplots(figsize=(15, 6))
+    # sns.barplot(x=count_casul.index, y='casualties', data=count_casul, palette='inferno')
+    # plt.xticks(rotation=90)
+    # plt.title('Casualties per year')
+    # plt.show()
+    #
+    # # attacks methods
+    # plt.subplots(figsize=(15, 6))
+    # sns.countplot('attacktype1_txt', data=df, palette='inferno', order=df['attacktype1_txt'].value_counts().index)
+    # plt.xticks(rotation=45)
+    # plt.title('Attacking Types by Terrorists')
+    # plt.show()
+    #
+    # # weapons used
+    # plt.subplots(figsize=(15, 6))
+    # sns.countplot('weaptype1_txt', data=df, palette='inferno', order=df['weaptype1_txt'].value_counts().index)
+    # plt.xticks(rotation=45)
+    # plt.title('Weapon types by Terrorists')
+    # plt.show()
 
     # attack type vs casualties
-    count_per_type = df.groupby('attacktype1_txt')['casualties'].sum().to_frame()
-    print(count_per_type)
+    casulties_per_type = df.groupby('attacktype1_txt')['casualties'].sum().to_frame()
     plt.subplots(figsize=(15, 6))
-    sns.barplot(x=count_per_type.index, y='casualties', data=count_per_type, palette='inferno')
+    sns.barplot(x=casulties_per_type.index, y='casualties', data=casulties_per_type, palette='inferno')
     plt.xticks(rotation=45)
     plt.title('Casualties per attack type')
+    plt.show()
+
+    # lethality per attack type
+    casulties_per_type = df.groupby('attacktype1_txt')['casualties'].sum().to_frame()
+    casulties_per_type.drop(['Unknown'], inplace=True)
+    count_per_type = df['attacktype1_txt'].value_counts()
+    count_per_type = pd.DataFrame({'index': count_per_type.index, 'count': count_per_type.values})
+    count_per_type.index = count_per_type['index']
+
+    for index, row in casulties_per_type.iterrows():
+        for index_, row_ in count_per_type.iterrows():
+            if index == index_:
+                ratio = row.values / row_[1]
+                casulties_per_type.loc[index] = ratio
+    plt.subplots(figsize=(15, 6))
+    sns.barplot(x=casulties_per_type.index, y='casualties', data=casulties_per_type, palette='inferno')
+    plt.xticks(rotation=45)
+    plt.title('Casualties ratio per attack type')
     plt.show()
 
 
@@ -74,6 +91,9 @@ def plots_grouped():
 
     # casualties per year
     count_casul = df_group.groupby(['iyear', 'gname'])['casualties'].sum().to_frame()
+    count_casul_total = df_group.groupby(['gname'])['casualties'].sum().to_frame()
+    print(count_casul_total)
+
     plt.subplots(figsize=(15, 6))
     sns.barplot(x=count_casul.index.get_level_values('iyear'), hue=count_casul.index.get_level_values('gname'), y='casualties', data=count_casul, palette='inferno')
     plt.xticks(rotation=90)
