@@ -20,7 +20,7 @@ df = df.assign(end_date=dates_end.values)
 df['end_date'] = np.where(df['end_date'] == 'NaT', df['start_date'], df['end_date'])
 df['summary'] = np.where(type(df['crit1']) == str, df['crit1'], df['summary'])
 
-# print(df['divert'].nunique())
+# print(df['divert']K.nunique())
 # test = df.loc[df['ndays'] == 2454]
 # print(test)
 
@@ -34,5 +34,5 @@ df_clean = df.drop(
      'claim2', 'claimmode2', 'claimmode2_txt', 'claim3', 'claimmode3', 'claimmode3_txt', 'compclaim', 'weaptype4',
      'weaptype4_txt', 'weapsubtype4', 'weapsubtype4_txt', 'nkillus', 'nwoundus', 'nwoundte', 'ishostkid', 'nhostkidus',
      'kidhijcountry', 'ransom', 'ransomamtus', 'ransompaidus', 'INT_MISC', 'INT_ANY'], axis=1)
-
-df_clean.to_csv('data/data_clean.csv', sep=';', encoding='utf-8')
+df_clean = df_clean.head(2)
+df_clean.to_csv('data/data_clean_snipped.csv', sep=';', encoding='utf-8')
