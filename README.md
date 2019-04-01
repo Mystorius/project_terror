@@ -11,3 +11,5 @@ The dataset we used can be found in the 'data' folder with a snipped and the who
 
 ## Code
 Our different code parts for the analysis and the machine learning part can be found in the various python files and python notebooks.
+
+
