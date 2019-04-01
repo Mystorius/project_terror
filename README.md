@@ -1,4 +1,4 @@
-# project_terror
+# Terrorism Analysis & Perpetrator Prediction
 Student project. Analyzing global terrorism dataset from GTD.
 
 ## Dataset
